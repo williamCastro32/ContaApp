@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Compras{% endblock %}
+
+{% block content %}
+    <h1>Compras</h1>
+    <a href="{% url 'purchase-create' %}" class="btn btn-primary mb-3">Crear Compra</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Entrada de Mercancía</th>
+                <th>Fecha de Compra</th>
+                <th>Proveedor</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for purchase in purchases %}
+                <tr>
+                    <td>{{ purchase.merchandise_entry }}</td>
+                    <td>{{ purchase.purchase_date }}</td>
+                    <td>{{ purchase.supplier }}</td>
+                    <td>{{ purchase.quantity }}</td>
+                    <td>{{ purchase.unit_price }}</td>
+                    <td>{{ purchase.total_price }}</td>
+                    <td>
+                        <a href="{% url 'purchase-update' purchase.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'purchase-delete' purchase.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

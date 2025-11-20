@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Ventas{% endblock %}
+
+{% block content %}
+    <h1>Ventas</h1>
+    <a href="{% url 'sale-create' %}" class="btn btn-primary mb-3">Crear Venta</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Entrada de Mercancía</th>
+                <th>Cliente</th>
+                <th>Fecha de Venta</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.merchandise_entry }}</td>
+                    <td>{{ sale.client }}</td>
+                    <td>{{ sale.sale_date }}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>{{ sale.unit_price }}</td>
+                    <td>{{ sale.total_price }}</td>
+                    <td>
+                        <a href="{% url 'sale-update' sale.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'sale-delete' sale.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

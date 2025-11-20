@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Cuentas por Cobrar{% endblock %}
+
+{% block content %}
+    <h1>Cuentas por Cobrar</h1>
+    <a href="{% url 'account-receivable-create' %}" class="btn btn-primary mb-3">Crear Cuenta por Cobrar</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Venta</th>
+                <th>Monto</th>
+                <th>Fecha de Vencimiento</th>
+                <th>Pagado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ar in account_receivables %}
+                <tr>
+                    <td>{{ ar.sale }}</td>
+                    <td>{{ ar.amount }}</td>
+                    <td>{{ ar.due_date }}</td>
+                    <td>{{ ar.paid }}</td>
+                    <td>
+                        <a href="{% url 'account-receivable-update' ar.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'account-receivable-delete' ar.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

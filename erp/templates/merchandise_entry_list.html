@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Entradas de Mercancía{% endblock %}
+
+{% block content %}
+    <h1>Entradas de Mercancía</h1>
+    <a href="{% url 'merchandise-create' %}" class="btn btn-primary mb-3">Crear Entrada de Mercancía</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha de Entrada</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in merchandise_entries %}
+                <tr>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.entry_date }}</td>
+                    <td>{{ entry.description }}</td>
+                    <td>
+                        <a href="{% url 'merchandise-update' entry.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'merchandise-delete' entry.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

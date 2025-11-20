@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Gastos{% endblock %}
+
+{% block content %}
+    <h1>Gastos</h1>
+    <a href="{% url 'expense-create' %}" class="btn btn-primary mb-3">Crear Gasto</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Entrada de Mercancía</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Fecha de Gasto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.merchandise_entry }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.expense_date }}</td>
+                    <td>
+                        <a href="{% url 'expense-update' expense.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'expense-delete' expense.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
