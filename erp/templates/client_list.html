@@ -10,6 +10,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Información de Contacto</th>
+                <th>Activo</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                 <tr>
                     <td>{{ client.name }}</td>
                     <td>{{ client.contact_info }}</td>
+                    <td>{% if client.active %}Sí{% else %}No{% endif %}</td>
                     <td>
                         <a href="{% url 'client-update' client.pk %}" class="btn btn-sm btn-warning">Editar</a>
                         <a href="{% url 'client-delete' client.pk %}" class="btn btn-sm btn-danger">Eliminar</a>

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmar Eliminación de Producto{% endblock %}
+
+{% block content %}
+    <h1>¿Estás seguro de que quieres eliminar el producto "{{ object }}"?</h1>
+    <p>Esta acción no se puede deshacer. Si el producto tiene stock o está asociado a transacciones, podría generar errores.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        <a href="{% url 'product-list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

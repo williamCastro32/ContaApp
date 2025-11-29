@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+    <h1>Productos</h1>
+    <a href="{% url 'product-create' %}" class="btn btn-primary mb-3">Crear Producto</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Unidad</th>
+                <th>Precio de Referencia</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.stock }}</td>
+                    <td>{{ product.get_unit_type_display }}</td>
+                    <td>{{ product.reference_price }}</td>
+                    <td>{% if product.active %}Sí{% else %}No{% endif %}</td>
+                    <td>
+                        <a href="{% url 'product-update' product.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'product-delete' product.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

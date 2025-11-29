@@ -1,7 +1,59 @@
+from django.db import transaction
+from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .models import Client, MerchandiseEntry, Purchase, Sale, Expense, AccountReceivable, Payment
-from .forms import ClientForm, MerchandiseEntryForm, PurchaseForm, SaleForm, ExpenseForm, AccountReceivableForm, PaymentForm
+from .models import (
+    Supplier, Product, Client, Purchase, PurchaseItem, PurchaseExpense, Sale, SaleItem, Payment
+)
+from .forms import (
+    SupplierForm, ProductForm, ClientForm, PurchaseForm, PurchaseItemForm, PurchaseExpenseForm, SaleForm, SaleItemForm, PaymentForm
+)
+
+# Supplier Views
+class SupplierListView(ListView):
+    model = Supplier
+    template_name = 'supplier_list.html'
+    context_object_name = 'suppliers'
+
+class SupplierCreateView(CreateView):
+    model = Supplier
+    form_class = SupplierForm
+    template_name = 'supplier_form.html'
+    success_url = reverse_lazy('supplier-list')
+
+class SupplierUpdateView(UpdateView):
+    model = Supplier
+    form_class = SupplierForm
+    template_name = 'supplier_form.html'
+    success_url = reverse_lazy('supplier-list')
+
+class SupplierDeleteView(DeleteView):
+    model = Supplier
+    template_name = 'supplier_confirm_delete.html'
+    success_url = reverse_lazy('supplier-list')
+
+# Product Views
+class ProductListView(ListView):
+    model = Product
+    template_name = 'product_list.html'
+    context_object_name = 'products'
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('product-list')
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('product-list')
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'product_confirm_delete.html'
+    success_url = reverse_lazy('product-list')
 
 # Client Views
 class ClientListView(ListView):
@@ -26,29 +78,6 @@ class ClientDeleteView(DeleteView):
     template_name = 'client_confirm_delete.html'
     success_url = reverse_lazy('client-list')
 
-# MerchandiseEntry Views
-class MerchandiseEntryListView(ListView):
-    model = MerchandiseEntry
-    template_name = 'merchandise_entry_list.html'
-    context_object_name = 'merchandise_entries'
-
-class MerchandiseEntryCreateView(CreateView):
-    model = MerchandiseEntry
-    form_class = MerchandiseEntryForm
-    template_name = 'merchandise_entry_form.html'
-    success_url = reverse_lazy('merchandise-list')
-
-class MerchandiseEntryUpdateView(UpdateView):
-    model = MerchandiseEntry
-    form_class = MerchandiseEntryForm
-    template_name = 'merchandise_entry_form.html'
-    success_url = reverse_lazy('merchandise-list')
-
-class MerchandiseEntryDeleteView(DeleteView):
-    model = MerchandiseEntry
-    template_name = 'merchandise_entry_confirm_delete.html'
-    success_url = reverse_lazy('merchandise-list')
-
 # Purchase Views
 class PurchaseListView(ListView):
     model = Purchase
@@ -61,11 +90,49 @@ class PurchaseCreateView(CreateView):
     template_name = 'purchase_form.html'
     success_url = reverse_lazy('purchase-list')
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        PurchaseItemFormSet = inlineformset_factory(Purchase, PurchaseItem, form=PurchaseItemForm, extra=1, can_delete=True)
+        if self.request.POST:
+            data['item_formset'] = PurchaseItemFormSet(self.request.POST, prefix='items')
+        else:
+            data['item_formset'] = PurchaseItemFormSet(prefix='items')
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        item_formset = context['item_formset']
+        with transaction.atomic():
+            self.object = form.save()
+            if item_formset.is_valid():
+                item_formset.instance = self.object
+                item_formset.save()
+        return super().form_valid(form)
+
 class PurchaseUpdateView(UpdateView):
     model = Purchase
     form_class = PurchaseForm
     template_name = 'purchase_form.html'
     success_url = reverse_lazy('purchase-list')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        PurchaseItemFormSet = inlineformset_factory(Purchase, PurchaseItem, form=PurchaseItemForm, extra=1, can_delete=True)
+        if self.request.POST:
+            data['item_formset'] = PurchaseItemFormSet(self.request.POST, instance=self.object, prefix='items')
+        else:
+            data['item_formset'] = PurchaseItemFormSet(instance=self.object, prefix='items')
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        item_formset = context['item_formset']
+        with transaction.atomic():
+            self.object = form.save()
+            if item_formset.is_valid():
+                item_formset.instance = self.object
+                item_formset.save()
+        return super().form_valid(form)
 
 class PurchaseDeleteView(DeleteView):
     model = Purchase
@@ -84,62 +151,54 @@ class SaleCreateView(CreateView):
     template_name = 'sale_form.html'
     success_url = reverse_lazy('sale-list')
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        SaleItemFormSet = inlineformset_factory(Sale, SaleItem, form=SaleItemForm, extra=1, can_delete=True)
+        if self.request.POST:
+            data['item_formset'] = SaleItemFormSet(self.request.POST, prefix='items')
+        else:
+            data['item_formset'] = SaleItemFormSet(prefix='items')
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        item_formset = context['item_formset']
+        with transaction.atomic():
+            self.object = form.save()
+            if item_formset.is_valid():
+                item_formset.instance = self.object
+                item_formset.save()
+        return super().form_valid(form)
+
 class SaleUpdateView(UpdateView):
     model = Sale
     form_class = SaleForm
     template_name = 'sale_form.html'
     success_url = reverse_lazy('sale-list')
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        SaleItemFormSet = inlineformset_factory(Sale, SaleItem, form=SaleItemForm, extra=1, can_delete=True)
+        if self.request.POST:
+            data['item_formset'] = SaleItemFormSet(self.request.POST, instance=self.object, prefix='items')
+        else:
+            data['item_formset'] = SaleItemFormSet(instance=self.object, prefix='items')
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        item_formset = context['item_formset']
+        with transaction.atomic():
+            self.object = form.save()
+            if item_formset.is_valid():
+                item_formset.instance = self.object
+                item_formset.save()
+        return super().form_valid(form)
+
 class SaleDeleteView(DeleteView):
     model = Sale
     template_name = 'sale_confirm_delete.html'
     success_url = reverse_lazy('sale-list')
-
-# Expense Views
-class ExpenseListView(ListView):
-    model = Expense
-    template_name = 'expense_list.html'
-    context_object_name = 'expenses'
-
-class ExpenseCreateView(CreateView):
-    model = Expense
-    form_class = ExpenseForm
-    template_name = 'expense_form.html'
-    success_url = reverse_lazy('expense-list')
-
-class ExpenseUpdateView(UpdateView):
-    model = Expense
-    form_class = ExpenseForm
-    template_name = 'expense_form.html'
-    success_url = reverse_lazy('expense-list')
-
-class ExpenseDeleteView(DeleteView):
-    model = Expense
-    template_name = 'expense_confirm_delete.html'
-    success_url = reverse_lazy('expense-list')
-
-# AccountReceivable Views
-class AccountReceivableListView(ListView):
-    model = AccountReceivable
-    template_name = 'account_receivable_list.html'
-    context_object_name = 'account_receivables'
-
-class AccountReceivableCreateView(CreateView):
-    model = AccountReceivable
-    form_class = AccountReceivableForm
-    template_name = 'account_receivable_form.html'
-    success_url = reverse_lazy('account-receivable-list')
-
-class AccountReceivableUpdateView(UpdateView):
-    model = AccountReceivable
-    form_class = AccountReceivableForm
-    template_name = 'account_receivable_form.html'
-    success_url = reverse_lazy('account-receivable-list')
-
-class AccountReceivableDeleteView(DeleteView):
-    model = AccountReceivable
-    template_name = 'account_receivable_confirm_delete.html'
-    success_url = reverse_lazy('account-receivable-list')
 
 # Payment Views
 class PaymentListView(ListView):

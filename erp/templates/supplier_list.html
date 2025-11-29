@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Proveedores{% endblock %}
+
+{% block content %}
+    <h1>Proveedores</h1>
+    <a href="{% url 'supplier-create' %}" class="btn btn-primary mb-3">Crear Proveedor</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Información de Contacto</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in suppliers %}
+                <tr>
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.contact_info }}</td>
+                    <td>{% if supplier.active %}Sí{% else %}No{% endif %}</td>
+                    <td>
+                        <a href="{% url 'supplier-update' supplier.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'supplier-delete' supplier.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,12 +1,64 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}{% if form.instance.pk %}Editar Venta{% else %}Crear Venta{% endif %}{% endblock %}
 
 {% block content %}
+<div class="container">
     <h1>{% if form.instance.pk %}Editar Venta{% else %}Crear Venta{% endif %}</h1>
-    <form method="post">
+    
+    <form method="post" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Guardar</button>
+
+        <fieldset class="mb-4">
+            <legend>Datos de la Venta</legend>
+            {{ form|crispy }}
+        </fieldset>
+
+        <fieldset>
+            <legend>Items de la Venta</legend>
+            {{ item_formset.management_form }}
+            <div id="item-form-list">
+                {% for item_form in item_formset %}
+                    <div class="item-form">
+                        {{ item_form|crispy }}
+                        <hr>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="empty-form" class="d-none">
+                {{ item_formset.empty_form|crispy }}
+            </div>
+            <button type="button" id="add-item-form" class="btn btn-success btn-sm">Agregar Producto</button>
+        </fieldset>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Guardar Venta</button>
+            <a href="{% url 'sale-list' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
     </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addItemButton = document.getElementById('add-item-form');
+    const totalForms = document.getElementById('id_items-TOTAL_FORMS');
+    const formList = document.getElementById('item-form-list');
+    const emptyFormTemplate = document.getElementById('empty-form').innerHTML;
+
+    addItemButton.addEventListener('click', function() {
+        let formNum = parseInt(totalForms.value);
+        let newFormHtml = emptyFormTemplate.replace(/__prefix__/g, formNum);
+        
+        let newFormElement = document.createElement('div');
+        newFormElement.classList.add('item-form');
+        newFormElement.innerHTML = newFormHtml + '<hr>';
+        formList.appendChild(newFormElement);
+        
+        totalForms.value = formNum + 1;
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

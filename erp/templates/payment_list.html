@@ -8,18 +8,22 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Cuenta por Cobrar</th>
-                <th>Fecha de Pago</th>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
                 <th>Monto</th>
+                <th>Disponible</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for payment in payments %}
                 <tr>
-                    <td>{{ payment.account_receivable }}</td>
-                    <td>{{ payment.payment_date }}</td>
+                    <td>{{ payment.id }}</td>
+                    <td>{{ payment.client }}</td>
+                    <td>{{ payment.date }}</td>
                     <td>{{ payment.amount }}</td>
+                    <td>{{ payment.available }}</td>
                     <td>
                         <a href="{% url 'payment-update' payment.pk %}" class="btn btn-sm btn-warning">Editar</a>
                         <a href="{% url 'payment-delete' payment.pk %}" class="btn btn-sm btn-danger">Eliminar</a>

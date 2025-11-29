@@ -8,24 +8,24 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Entrada de Mercancía</th>
+                <th>Folio</th>
                 <th>Cliente</th>
-                <th>Fecha de Venta</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Precio Total</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Saldo</th>
+                <th>Estado de Pago</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for sale in sales %}
                 <tr>
-                    <td>{{ sale.merchandise_entry }}</td>
+                    <td>{{ sale.folio }}</td>
                     <td>{{ sale.client }}</td>
-                    <td>{{ sale.sale_date }}</td>
-                    <td>{{ sale.quantity }}</td>
-                    <td>{{ sale.unit_price }}</td>
-                    <td>{{ sale.total_price }}</td>
+                    <td>{{ sale.date }}</td>
+                    <td>{{ sale.total }}</td>
+                    <td>{{ sale.balance }}</td>
+                    <td>{{ sale.get_payment_status_display }}</td>
                     <td>
                         <a href="{% url 'sale-update' sale.pk %}" class="btn btn-sm btn-warning">Editar</a>
                         <a href="{% url 'sale-delete' sale.pk %}" class="btn btn-sm btn-danger">Eliminar</a>

@@ -8,24 +8,22 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Entrada de Mercancía</th>
-                <th>Fecha de Compra</th>
+                <th>Folio</th>
                 <th>Proveedor</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Precio Total</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for purchase in purchases %}
                 <tr>
-                    <td>{{ purchase.merchandise_entry }}</td>
-                    <td>{{ purchase.purchase_date }}</td>
+                    <td>{{ purchase.folio }}</td>
                     <td>{{ purchase.supplier }}</td>
-                    <td>{{ purchase.quantity }}</td>
-                    <td>{{ purchase.unit_price }}</td>
-                    <td>{{ purchase.total_price }}</td>
+                    <td>{{ purchase.date }}</td>
+                    <td>{{ purchase.total }}</td>
+                    <td>{{ purchase.get_status_display }}</td>
                     <td>
                         <a href="{% url 'purchase-update' purchase.pk %}" class="btn btn-sm btn-warning">Editar</a>
                         <a href="{% url 'purchase-delete' purchase.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
